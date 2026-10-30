@@ -1,3 +1,7 @@
+- /.hermes/cron/*.db*
+- /.hermes/webui/*.db*
+- /.hermes/profiles/*/cron/*.db*
+- /.hermes/profiles/*/webui/*.db*
 - /.hermes/*.db.*.partial
 - /.hermes/profiles/*/*.db.*.partial
 - /.hermes/.gateway_state_*.tmp
@@ -46,7 +50,3 @@
 
 # 排除其余所有
 - *
-- /.hermes/cron/*.db*
-- /.hermes/webui/*.db*
-- /.hermes/profiles/*/cron/*.db*
-- /.hermes/profiles/*/webui/*.db*

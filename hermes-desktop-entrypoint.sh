@@ -45,6 +45,13 @@ if [[ "${SKIP_RESTORE:-0}" != 1 ]]; then
         --stats 60s --stats-log-level NOTICE
     fi
     mkdir -p /root/.hermes/logs
+    chmod 0700 /root/.hermes
+    for profile_home in /root/.hermes /root/.hermes/profiles/*; do
+        [[ -d "$profile_home" ]] || continue
+        for private_file in .env auth.json config.yaml; do
+            [[ ! -f "$profile_home/$private_file" ]] || chmod 0600 "$profile_home/$private_file"
+        done
+    done
     for private_dir in credentials secrets; do
         if [[ -d "/root/.hermes/$private_dir" ]]; then
             chmod 0700 "/root/.hermes/$private_dir"
