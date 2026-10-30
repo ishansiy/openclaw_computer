@@ -14,7 +14,8 @@ def atomic(p,data):
     tmp=p.with_name(p.name+'.new-'+str(os.getpid()));tmp.write_text(json.dumps(data,indent=2));os.replace(tmp,p)
 def sources():
     homes=[HOME,*[p for p in (HOME/'profiles').iterdir() if p.is_dir()]]
-    return sorted(p for home in homes for p in home.glob('*.db') if p.is_file() and p.open('rb').read(16)==b'SQLite format 3\0')
+    directories=[directory for home in homes for directory in [home,home/'cron',home/'webui'] if directory.is_dir()]
+    return sorted(p for directory in directories for p in directory.glob('*.db') if p.is_file() and p.open('rb').read(16)==b'SQLite format 3\0')
 def signature():
     result={}
     for p in sources():

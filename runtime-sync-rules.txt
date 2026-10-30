@@ -46,3 +46,7 @@
 
 # 排除其余所有
 - *
+- /.hermes/cron/*.db*
+- /.hermes/webui/*.db*
+- /.hermes/profiles/*/cron/*.db*
+- /.hermes/profiles/*/webui/*.db*

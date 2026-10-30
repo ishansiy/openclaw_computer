@@ -102,7 +102,11 @@ RUN set -eux; \
       mv "/root/.hermes/$source_name" "/tmp/$cache_name"; \
       ln -s "/tmp/$cache_name" "/root/.hermes/$source_name"; \
     done; \
-    /root/.local/bin/hermes --version | grep -F "${HERMES_VERSION}"
+    /root/.local/bin/hermes --version | grep -F "${HERMES_VERSION}"; \
+    cd /root/.hermes/hermes-agent; \
+    runtime_python=$(/usr/bin/python3 -c 'from pathlib import Path; from pm.environments import selected_venv; print(selected_venv(Path.cwd()) / "bin/python")'); \
+    "$runtime_python" -c 'from pathlib import Path; from hermes_cli._launchers import ensure_install_launchers; root=Path.cwd(); ensure_install_launchers(root, root / "venv/bin")'; \
+    /root/.hermes/hermes-agent/venv/bin/python -c 'import openai, pydantic_core'
 
 ENV HERMES_WEB_DIST=/root/.hermes/hermes-agent/hermes_cli/web_dist
 
