@@ -17,8 +17,8 @@ verify_image_hermes_runtime() {
   fi
 
   actual_version=$(
-    "$hermes_runtime/venv/bin/python" -c \
-      'from importlib.metadata import version; print(version("hermes-agent"))' \
+    PYTHONPATH="$hermes_runtime" "$hermes_runtime/venv/bin/python" -c \
+      'from hermes_cli.version_info import get_code_identity; print(get_code_identity()["version"])' \
       2>/dev/null
   ) || actual_version=unknown
   actual_commit=$(git -C "$hermes_runtime" rev-parse HEAD 2>/dev/null) || actual_commit=unknown
@@ -37,6 +37,9 @@ verify_image_hermes_runtime() {
 
 
 verify_image_hermes_runtime || exit 1
+if [ "${HERMES_VERIFY_ONLY:-0}" = 1 ]; then
+  exit 0
+fi
 # Load persistence filters before the base image copies any user state.
 # Active SQLite is restored from Online Backup API checkpoints by main.sh.
 if [ "$SKIP_RESTORE" != 1 ] && [ -s /mnt/workspace/hermes-persistent/bootstrap/runtime-sync-rules.txt ]; then

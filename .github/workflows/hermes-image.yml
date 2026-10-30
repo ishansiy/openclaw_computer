@@ -21,3 +21,4 @@ jobs:
       - name: Verify built runtime
         run: |
           docker run --rm --entrypoint /bin/bash hermes-computer:verify -lc 'hermes --version; python3 /opt/hermes-image/sqlite_checkpoint.py --help'
+          docker run --rm -e HERMES_VERIFY_ONLY=1 hermes-computer:verify
