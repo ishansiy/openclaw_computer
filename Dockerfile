@@ -93,6 +93,7 @@ RUN set -eux; \
     rm -f /tmp/hermes-install.sh
 
 # Bake PM's locked runtime into the image. The compatibility paths remain stable.
+COPY image-python.sh /opt/hermes-image/python
 RUN set -eux; \
     test -s /root/.hermes/hermes-agent/hermes_cli/web_dist/index.html; \
     for pair in tools:hermes-pm-tools-cache installs:hermes-pm-installs-cache; do \
@@ -106,6 +107,7 @@ RUN set -eux; \
     cd /root/.hermes/hermes-agent; \
     runtime_python=$(/usr/bin/python3 -c 'from pathlib import Path; from pm.environments import selected_venv; print(selected_venv(Path.cwd()) / "bin/python")'); \
     "$runtime_python" -c 'from pathlib import Path; from hermes_cli._launchers import ensure_install_launchers; root=Path.cwd(); ensure_install_launchers(root, root / "venv/bin")'; \
+    install -m 0755 /opt/hermes-image/python /root/.hermes/hermes-agent/venv/bin/python; \
     /root/.hermes/hermes-agent/venv/bin/python -c 'import openai, pydantic_core'
 
 ENV HERMES_WEB_DIST=/root/.hermes/hermes-agent/hermes_cli/web_dist
