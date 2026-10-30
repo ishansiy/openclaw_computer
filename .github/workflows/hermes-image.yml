@@ -1,0 +1,23 @@
+name: Hermes image
+on:
+  push:
+    branches: [hermes]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate startup code
+        run: |
+          bash -n hermes-desktop-entrypoint.sh platform-sync-daemon.sh
+          sh -n tailscale-entrypoint.sh
+          python3 -m py_compile sqlite_checkpoint.py
+      - name: Build pinned Hermes image
+        run: docker build --progress=plain -t hermes-computer:verify .
+      - name: Verify built runtime
+        run: |
+          docker run --rm --entrypoint /bin/bash hermes-computer:verify -lc 'hermes --version; python3 /opt/hermes-image/sqlite_checkpoint.py --help'
